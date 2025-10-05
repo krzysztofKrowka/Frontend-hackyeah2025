@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { service } from "../api/service";
+import warning from "../assets/alert-error-svgrepo-com.svg"
 const TYPE_TRAIN_DELAY = 'trainDelay';
 const TYPE_TRAIN_FAILURE = 'trainFailure';
 const TYPE_ROAD_FAILURE = 'roadFailure';
@@ -57,22 +58,62 @@ export const CreateReport = ({ data }: any) => {
                 className="inset-ring-2 inset-ring-red-400 font-bold fixed bottom-4 left-4 bg-red-500 text-white w-25 h-25 rounded-full shadow-lg items-center justify-center"
                 onClick={() => setOpenPopup(true)}
             >
-                REPORT
+                <img src={warning} className="rounded- w-full h-2/3 "></img>
             </button>
 
         </div>
-        {openPopup && <div className="absolute w-4/5 h-9/20 bottom-60 left-1/10 bg-gray-200 rounded-2xl border border-black text-xl">
-            <p onClick={() => setOpenPopup(false)} className="m-4 absolute right-2 font-bold">X</p>
-            <input onChange={(e) => { setDescription(e.target.value) }} id="description" placeholder={"Description"} className="p-3 bg-gray-100  rounded-full border border-red-500 mt-14 m-4 w-9/10" />
-            <input onChange={(e) => { setDelay(parseInt(e.target.value)) }} id="time" type={"number"} placeholder={"Delay (in minutes)"} className="p-3 bg-gray-100 rounded-full border border-red-500 m-4 w-9/10 " />
-            <input onChange={(e) => { setType(e.target.value) }} list="reportTypes" placeholder="Type" id="type" className="p-3 bg-gray-100 rounded-full border border-red-500 m-4 w-9/10 " />
-            <button onClick={handleReport} className="bg-red-500 text-white text-3xl px-6 py-3 rounded-2xl w-1/2 left-1/4 absolute bottom-10">  REPORT</button>
-            <datalist id="reportTypes">
-                {tabs.map((t) => {
-                    return <option key={t.type} value={t.desc}></option>
-                })}
-            </datalist>
-        </div>
-        }
+        {openPopup && (
+            <div className="fixed inset-0 flex justify-center items-end z-50">
+                <div className="relative w-5/5 h-10/20 bg-white rounded-t-2xl text-xl shadow-2xl">
+
+                    {/* HEADER */}
+                    <div className="bg-gray-800 text-white rounded-t-2xl p-4 flex justify-between items-center">
+                        <h2 className="text-2xl font-semibold">Report Issue</h2>
+                        <button
+                            onClick={() => setOpenPopup(false)}
+                            className="font-bold text-white text-xl hover:text-red-400"
+                        >
+                            ✕
+                        </button>
+                    </div>
+
+                    {/* FORM CONTENT */}
+                    <div className="flex flex-col items-center">
+                        <input
+                            onChange={(e) => setDescription(e.target.value)}
+                            id="description"
+                            placeholder="Description"
+                            className="p-3 bg-gray-100 rounded-full shadow-lg mt-6 m-4 w-9/10 focus:outline-none focus:ring-2 focus:ring-grey-200 focus:border-grey-200 transition"
+                        />
+                        <input
+                            onChange={(e) => setDelay(parseInt(e.target.value))}
+                            id="time"
+                            type="number"
+                            placeholder="Delay (in minutes)"
+                            className="p-3 bg-gray-100 shadow-lg rounded-full m-4 w-9/10 focus:outline-none focus:ring-2 focus:ring-grey-200 focus:border-grey-200 transition"
+                        />
+                        <input
+                            onChange={(e) => setType(e.target.value)}
+                            list="reportTypes"
+                            placeholder="Type"
+                            id="type"
+                            className="p-3 bg-gray-100 rounded-full shadow-lg m-4 w-9/10 focus:outline-none focus:ring-2 focus:ring-grey-200 focus:border-grey-200 transition"
+                        />
+                        <button
+                            onClick={handleReport}
+                            className="bg-red-500 text-white text-3xl px-6 py-3 rounded-2xl w-1/2 shadow-lg mt-4"
+                        >
+                            REPORT
+                        </button>
+                    </div>
+
+                    <datalist id="reportTypes">
+                        {tabs.map((t) => (
+                            <option key={t.type} value={t.desc}></option>
+                        ))}
+                    </datalist>
+                </div>
+            </div>
+        )}
     </div >
 }

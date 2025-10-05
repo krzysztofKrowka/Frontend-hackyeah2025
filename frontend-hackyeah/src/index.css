@@ -1,1 +1,6 @@
 @import "tailwindcss";
+
+.specialtext {
+    -webkit-text-fill-color: white;
+    -webkit-text-stroke-width: 1px;
+}

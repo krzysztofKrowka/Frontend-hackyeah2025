@@ -13,6 +13,7 @@ import garbageBin from "../assets/garbage-bin-svgrepo-com.svg"
 import arrowUp from "../assets/arrow-up-svgrepo-com.svg"
 import arrowDown from "../assets/arrow-down-svgrepo-com.svg"
 import train from "../assets/train-svgrepo-com.svg"
+import position from "../assets/location-target-svgrepo-com.svg"
 const TYPE_TRAIN_DELAY = 'trainDelay';
 const TYPE_TRAIN_FAILURE = 'trainFailure';
 const TYPE_ROAD_FAILURE = 'roadFailure';
@@ -62,7 +63,7 @@ type ErrorData = {
 }
 export const Map = ({ stateData }: any) => {
     const [location, setLocation] = useState({ latitude: 0, longitude: 0 })
-    const [data, setData] = useState<{ map: MapData, reports: ErrorData[][], train: any }>()
+    const [data, setData] = useState<{ map: MapData, reports: any, train: any }>()
     let prev: MarkerNode = {
         position: {
             lat: 0,
@@ -94,8 +95,8 @@ export const Map = ({ stateData }: any) => {
             (position) => {
                 setLocation(
                     {
-                        latitude: position.coords.latitude,
-                        longitude: position.coords.longitude
+                        latitude: 49.9893095,
+                        longitude: 19.5399543
                     }
                 )
             },
@@ -114,6 +115,11 @@ export const Map = ({ stateData }: any) => {
         iconSize: [25, 25],
         iconAnchor: [12.5, 12.5],
     });
+    const positionIcon = L.icon({
+        iconUrl: position,
+        iconSize: [25, 25],
+        iconAnchor: [12.5, 25],
+    });
     return <div className="w-5/5 h-5/5  fixed   bg-black">
 
         {location.latitude &&
@@ -123,6 +129,7 @@ export const Map = ({ stateData }: any) => {
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
+                <Marker icon={positionIcon} position={[location.latitude, location.longitude]}><Popup>You are here</Popup></Marker>
                 {data?.map.markers && data?.map.markers.map((l) => {
                     if (!prev.position.lat) {
                         prev = l
@@ -149,13 +156,13 @@ export const Map = ({ stateData }: any) => {
                         </div>
                     }
                 })}
-                {(data?.reports) && data.reports.map(r => {
+                {(data?.reports) && data.reports.map((r: any) => {
                     let ticketOwner = false
                     if (r[0].userId == stateData.user.id)
                         ticketOwner = true
                     return <div key={r[0].id}>
                         <Report position={[r[0].reportLat, r[0].reportLon]}>
-                            <div className='w-40 h-30'>
+                            <div className='min-w-40 min-h-30'>
                                 <h1 className='text-2xl font-bold'>
                                     {tabs.filter(t => t.type == r[0].type)[0].desc}
                                 </h1>
@@ -167,15 +174,17 @@ export const Map = ({ stateData }: any) => {
                                         service.deleteTicket(stateData.user.id, r[0].id)
                                     }}><img width={40} height={40} src={garbageBin} /></button>
                                 </div>}
-                                {!ticketOwner && <div>
+                                {!ticketOwner && <div className='flex my-2 justify-content'>
+                                    <span className='absolute left-6 text-red-600 text-xl bottom-7 font-bold'>-{r.negativeCount}</span>
                                     <button onClick={() => service.disproveReport(stateData.user.id, r[0].id)}
-                                        className='bg-red-500 rounded-md'>
+                                        className='absolute left-12 bg-red-500 rounded-md'>
                                         <img width={48} height={48} src={arrowDown} />
                                     </button>
                                     <button onClick={() => service.confirmReport(stateData.user.id, r[0].id)}
-                                        className='bg-green-500 rounded-md ml-4'>
+                                        className='absolute right-12 bg-green-500 rounded-md ml-4'>
                                         <img width={48} height={48} src={arrowUp} />
                                     </button>
+                                    <span className='absolute text-xl font-bold bottom-7 right-5 text-green-600'>+{r.positiveCount}</span>
                                 </div>
                                 }
                             </div>

@@ -2,6 +2,7 @@ import { useState } from "react"
 import konto from "../assets/konto.svg"
 import Clock from "./Clock"
 import { service } from "../api/service"
+import coin from "../assets/coin-vector-svgrepo-com.svg"
 export const Bar = ({ data, setData, interval }: any) => {
 
     const [openInput, setOpenInput] = useState(false)
@@ -33,6 +34,7 @@ export const Bar = ({ data, setData, interval }: any) => {
         <div className="bg-white h-15 flex items-center justify-end pr-4 p-1 border-gray-300 shadow-[0_8px_20px_2px_rgba(0,0,0,0.35)]">
             <Clock />
             <p className="float-right text-black mr-2">{data.user.points}</p>
+            <img src={coin} width={20} className="mr-2" />
             <button
 
                 onClick={() => { setOpenInput(!openInput) }}
